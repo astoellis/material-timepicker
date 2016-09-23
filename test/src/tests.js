@@ -2,7 +2,7 @@
 import TimePicker from '../../src/js/timepicker';
 import assign from '../../src/js/assign';
 
-describe('TimePicker Unit Tests', function() {  
+describe('TimePicker Unit Tests', function() {
     let picker;
 
     beforeEach(function() {
@@ -18,7 +18,8 @@ describe('TimePicker Unit Tests', function() {
         picker.cachedEls.wrapper = divNode.cloneNode();
         picker.cachedEls.picker = divNode.cloneNode();
         picker.cachedEls.meridiem = divNode.cloneNode();
-        picker.cachedEls.displayTime = spanNode.cloneNode();
+        picker.cachedEls.displayTimeHours = spanNode.cloneNode();
+        picker.cachedEls.displayTimeMinutes = spanNode.cloneNode();
         picker.cachedEls.displayMeridiem = divNode.cloneNode();
         picker.cachedEls.buttonCancel = buttonNode.cloneNode();
         picker.cachedEls.buttonBack = buttonNode.cloneNode();
@@ -407,8 +408,8 @@ describe('TimePicker Unit Tests', function() {
         });
 
         it('should call dispatchEvevnt with blur event on inputEl', function() {
-            const dispatchEventSpy = sinon.spy(picker.inputEl, 'dispatchEvent');    
-            
+            const dispatchEventSpy = sinon.spy(picker.inputEl, 'dispatchEvent');
+
             picker.hide();
 
             expect(dispatchEventSpy.calledOnce).to.be.true;
@@ -564,32 +565,32 @@ describe('TimePicker Unit Tests', function() {
         let displayTimeEl;
 
         beforeEach(function() {
-            picker.cachedEls.displayTime.innerHTML = '00:00';
-            displayTimeEl = picker.cachedEls.displayTime;
+            picker.cachedEls.displayTimeHours.innerHTML = '00';
+            picker.cachedEls.displayTimeMinutes.innerHTML = '00';
         });
 
         it('should replace hour time with value given when index 0', function() {
-            expect(displayTimeEl.innerHTML).to.equal('00:00');
+            expect(picker.cachedEls.displayTimeHours.innerHTML).to.equal('00');
 
             picker.setDisplayTime('15', 0);
 
-            expect(displayTimeEl.innerHTML).to.equal('15:00');
+            expect(picker.cachedEls.displayTimeHours.innerHTML).to.equal('15');
         });
 
         it('should replace minute time with value given when index 1', function() {
-            expect(displayTimeEl.innerHTML).to.equal('00:00');
+            expect(picker.cachedEls.displayTimeMinutes.innerHTML).to.equal('00');
 
             picker.setDisplayTime('15', 1);
 
-            expect(displayTimeEl.innerHTML).to.equal('00:15');
+            expect(picker.cachedEls.displayTimeMinutes.innerHTML).to.equal('15');
         });
 
         it('should pad minute value with 0 if value is single diget', function() {
-            expect(displayTimeEl.innerHTML).to.equal('00:00');
+            expect(picker.cachedEls.displayTimeMinutes.innerHTML).to.equal('00');
 
             picker.setDisplayTime('1', 1);
 
-            expect(displayTimeEl.innerHTML).to.equal('00:01');
+            expect(picker.cachedEls.displayTimeMinutes.innerHTML).to.equal('01');
         });
     });
 
@@ -795,9 +796,9 @@ describe('TimePicker Unit Tests', function() {
         it('should return the index of element with .mtp-clock--active', function() {
             const expectedIndex = 6;
             const clockHoursLi = picker.cachedEls.clockHoursLi;
-            
+
             clockHoursLi[expectedIndex].classList.add('mtp-clock--active');
-            
+
             expect(picker.getActiveIndex(clockHoursLi)).to.equal(expectedIndex);
         });
     });
@@ -807,7 +808,8 @@ describe('TimePicker Unit Tests', function() {
 
         beforeEach(function() {
             picker.inputEl = document.createElement('input');
-            picker.cachedEls.displayTime.innerHTML = '11:00';
+            picker.cachedEls.displayTimeHours.innerHTML = '11';
+            picker.cachedEls.displayTimeMinutes.innerHTML = '00';
             picker.cachedEls.displayMeridiem.innerHTML = 'pm';
             isMilitaryFormatStub = sinon.stub(picker, 'isMilitaryFormat');
             dispatchEventSpy = sinon.spy(picker.inputEl, 'dispatchEvent');
@@ -818,14 +820,14 @@ describe('TimePicker Unit Tests', function() {
             dispatchEventSpy.restore();
         });
 
-        it(`should set displayTime.innerHTML and displayMeridiem.innerHTML to 
+        it(`should set displayTime.innerHTML and displayMeridiem.innerHTML to
            inputEl.value if isMilitaryFormat is true`, function() {
             isMilitaryFormatStub.onCall(0).returns(false);
 
             picker.timeSelected();
             expect(picker.inputEl.value).to.equal('11:00 pm');
         });
-        
+
         it('should set displayTime.innerHTML to inputEl.value if isMilitaryFormat is true', function() {
             isMilitaryFormatStub.onCall(0).returns(true);
 
