@@ -268,6 +268,28 @@ describe('TimePicker Unit Tests', function() {
         });
     });
 
+    describe( '#parseInput', () => {
+
+      let parseInputSpy;
+
+      beforeEach(function() {
+          parseInputSpy = sinon.spy(picker, 'parseInput');
+      });
+
+      afterEach(function() {
+          parseInputSpy.restore();
+      });
+
+      it( 'should return array of length 3 with date input', () => {
+        let result = picker.parseInput('9:00 PM');
+        expect(parseInputSpy.calledOnce).to.be.true;
+      });
+      it( 'should return array of length 3 with date input', () => {
+        let result = picker.parseInput('9:00 PM');
+        expect(result).to.deep.equal(['9','00','PM']);
+      });
+    });
+
     describe('#show', function() {
         let blurSpy, isMilitaryFormatStub, toggleHoursVisibleSpy, toggleMinutesVisibleSpy,
         setDisplayTimeSpy;
@@ -331,6 +353,20 @@ describe('TimePicker Unit Tests', function() {
             picker.show();
 
             expect(setDisplayTimeSpy.getCall(1).calledWith('0', 1)).to.be.true;
+        });
+
+        it('should call #setDisplayTime, index 0, with 4 if hasInput is true', function() {
+            picker.inputEl.value = '4:00 PM';
+            picker.show(true);
+
+            expect(setDisplayTimeSpy.getCall(0).calledWith('4', 0)).to.be.true;
+        });
+
+        it('should call #setDisplayTime, index 1, with 45 if hasInput is true', function() {
+            picker.inputEl.value = '1:45 PM';
+            picker.show(true);
+
+            expect(setDisplayTimeSpy.getCall(1).calledWith('45', 1)).to.be.true;
         });
 
         it('should set cachedEls.displayMeridiem.style.display to none when isMilitaryFormat is true', function() {
@@ -487,20 +523,12 @@ describe('TimePicker Unit Tests', function() {
             isMilitaryFormatStub = sinon.stub(picker, 'isMilitaryFormat');
             toggleHoursVisibleSpy = sinon.spy(picker, 'toggleHoursVisible');
             toggleMinutesVisibleSpy = sinon.spy(picker, 'toggleMinutesVisible');
-            hoursLiDispatchEventSpy = sinon.spy(cachedEls.clockHoursLi[9], 'dispatchEvent');
-            minutesLiDispatchEventSpy = sinon.spy(cachedEls.clockMinutesLi[45], 'dispatchEvent');
-            militaryHoursLiDispatchEventSpy = sinon.spy(cachedEls.clockMilitaryHoursLi[9], 'dispatchEvent');
-            meridiemSpanDispatchEventSpy = sinon.spy(cachedEls.meridiemSpans[0], 'dispatchEvent');
         });
 
         afterEach(function() {
             isMilitaryFormatStub.restore();
             toggleHoursVisibleSpy.restore();
             toggleMinutesVisibleSpy.restore();
-            hoursLiDispatchEventSpy.restore();
-            minutesLiDispatchEventSpy.restore();
-            militaryHoursLiDispatchEventSpy.restore();
-            meridiemSpanDispatchEventSpy.restore();
         });
 
         it('should set currentStep to 0', function() {
@@ -532,33 +560,6 @@ describe('TimePicker Unit Tests', function() {
             expect(toggleMinutesVisibleSpy.calledOnce).to.be.true;
         });
 
-        it('should call dispatchEvent with click event on cachedEls.clockHoursLi[9]', function() {
-            picker.resetState();
-
-            expect(hoursLiDispatchEventSpy.calledOnce).to.be.true;
-            expect(hoursLiDispatchEventSpy.args[0][0].type).to.equal('click');
-        });
-
-        it('should call dispatchEvent with click event on cachedEls.clockMinutesLi[9]', function() {
-            picker.resetState();
-
-            expect(minutesLiDispatchEventSpy.calledOnce).to.be.true;
-            expect(minutesLiDispatchEventSpy.args[0][0].type).to.equal('click');
-        });
-
-        it('should call dispatchEvent with click event on cachedEls.clockMilitaryHoursLi[9]', function() {
-            picker.resetState();
-
-            expect(militaryHoursLiDispatchEventSpy.calledOnce).to.be.true;
-            expect(militaryHoursLiDispatchEventSpy.args[0][0].type).to.equal('click');
-        });
-
-        it('should call dispatchEvent with click event on cachedEls.meridiemSpans[0]', function() {
-            picker.resetState();
-
-            expect(meridiemSpanDispatchEventSpy.calledOnce).to.be.true;
-            expect(meridiemSpanDispatchEventSpy.args[0][0].type).to.equal('click');
-        });
     });
 
     describe('#setDisplayTime', function() {
