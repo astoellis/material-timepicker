@@ -52,7 +52,8 @@ class TimePicker {
         this.cachedEls.picker = this.cachedEls.wrapper.getElementsByClassName('mtp-picker')[0];
         this.cachedEls.meridiem = this.cachedEls.wrapper.getElementsByClassName('mtp-meridiem')[0];
         this.cachedEls.meridiemSpans = this.cachedEls.meridiem.getElementsByTagName('span');
-        this.cachedEls.displayTime = this.cachedEls.wrapper.getElementsByClassName('mtp-display__time')[0];
+        this.cachedEls.displayTimeHours = this.cachedEls.wrapper.getElementsByClassName('mtp-display__time--hours')[0];
+        this.cachedEls.displayTimeMinutes = this.cachedEls.wrapper.getElementsByClassName('mtp-display__time--minutes')[0];
         this.cachedEls.displayMeridiem = this.cachedEls.wrapper.getElementsByClassName('mtp-display__meridiem')[0];
         this.cachedEls.buttonCancel = this.cachedEls.picker.getElementsByClassName('mtp-actions__cancel')[0];
         this.cachedEls.buttonBack = this.cachedEls.picker.getElementsByClassName('mtp-actions__back')[0];
@@ -239,11 +240,11 @@ class TimePicker {
      * @return {void}
      */
     setDisplayTime(value, index) {
-        const time = this.cachedEls.displayTime.innerHTML.split(':');
+        const time = [this.cachedEls.displayTimeHours, this.cachedEls.displayTimeMinutes];
 
         // prepend with zero if selecting minutes and value is single digit
         time[index] = index === 1 && value < 10 ? `0${value}` : value;
-        this.cachedEls.displayTime.innerHTML = time.join(':');
+        this.cachedEls[`displayTime${index ? 'Minutes' : 'Hours'}`].innerHTML = time[index];
     }
 
     /**
@@ -346,7 +347,7 @@ class TimePicker {
      * @return {void}
      */
     timeSelected() {
-        const time = this.cachedEls.displayTime.innerHTML;
+        const time = `${this.cachedEls.displayTimeHours.innerHTML}:${this.cachedEls.displayTimeMinutes.innerHTML}`;
         const meridiem = this.isMilitaryFormat() ? '' : this.cachedEls.displayMeridiem.innerHTML;
         const timeValue = `${time} ${meridiem}`;
 

@@ -2,7 +2,9 @@ const template = `
 <div class="mtp-overlay" style="display:none">
     <div class="mtp-wrapper">
         <div class="mtp-display">
-            <span class="mtp-display__time">12:00</span>
+            <span class="mtp-display__time--hours">12</span>
+            <span class="mtp-display__time">:</span>
+            <span class="mtp-display__time--minutes">00</span>
             <span class="mtp-display__meridiem">am</span>
         </div><!-- END .mtp-display -->
         <div class="mtp-picker">
