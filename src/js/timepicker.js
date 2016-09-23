@@ -151,19 +151,35 @@ class TimePicker {
     }
 
     /**
+     * get Hours, Minutes, and Meridiem from input value
+     * @param {String} inputValue Value that is taken from the inputEl
+     * @return {Array} Array of H, M, and Meridiem.
+     */
+    parseInput(inputValue) {
+        return inputValue.split(/:|\s+/);
+    }
+
+    /**
      * Show the picker in the DOM
-     *
+     * @param {Boolean} hasInput Whether the inputEl has a current value
      * @return {void}
      */
-    show() {
+    show( hasInput ) {
         const isMilitaryFormat = this.isMilitaryFormat();
 
         // blur input to prevent onscreen keyboard from displaying
         this.inputEl.blur();
         this.toggleHoursVisible(true, isMilitaryFormat);
         this.toggleMinutesVisible();
-        this.setDisplayTime(isMilitaryFormat ? '00' : '12', 0);
-        this.setDisplayTime('0', 1);
+
+        if ( hasInput ) {
+          let inputValues = this.parseInput( this.inputEl.value );
+          this.setDisplayTime(inputValues[0], 0);
+          this.setDisplayTime(inputValues[1], 1);
+        } else {
+          this.setDisplayTime(isMilitaryFormat ? '00' : '12', 0);
+          this.setDisplayTime('0', 1);
+        }
 
         this.cachedEls.body.style.overflow = 'hidden';
         this.cachedEls.displayMeridiem.style.display = isMilitaryFormat ? 'none' : 'inline';
@@ -226,10 +242,6 @@ class TimePicker {
         this.currentStep = 0;
         this.toggleHoursVisible(true, this.isMilitaryFormat());
         this.toggleMinutesVisible();
-        this.cachedEls.clockHoursLi[0].dispatchEvent(new Event('click'));
-        this.cachedEls.clockMinutesLi[0].dispatchEvent(new Event('click'));
-        this.cachedEls.clockMilitaryHoursLi[0].dispatchEvent(new Event('click'));
-        this.cachedEls.meridiemSpans[0].dispatchEvent(new Event('click'));
     }
 
     /**
