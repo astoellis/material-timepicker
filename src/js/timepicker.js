@@ -164,7 +164,7 @@ class TimePicker {
      * @param {Boolean} hasInput Whether the inputEl has a current value
      * @return {void}
      */
-    show( hasInput ) {
+    show(hasInput) {
         const isMilitaryFormat = this.isMilitaryFormat();
 
         // blur input to prevent onscreen keyboard from displaying
@@ -172,13 +172,14 @@ class TimePicker {
         this.toggleHoursVisible(true, isMilitaryFormat);
         this.toggleMinutesVisible();
 
-        if ( hasInput ) {
-          let inputValues = this.parseInput( this.inputEl.value );
-          this.setDisplayTime(inputValues[0], 0);
-          this.setDisplayTime(inputValues[1], 1);
+        if (hasInput) {
+            const inputValues = this.parseInput(this.inputEl.value);
+
+            this.setDisplayTime(inputValues[0], 0);
+            this.setDisplayTime(inputValues[1], 1);
         } else {
-          this.setDisplayTime(isMilitaryFormat ? '00' : '12', 0);
-          this.setDisplayTime('0', 1);
+            this.setDisplayTime(isMilitaryFormat ? '00' : '12', 0);
+            this.setDisplayTime('0', 1);
         }
 
         this.cachedEls.body.style.overflow = 'hidden';
