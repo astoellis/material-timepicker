@@ -196,8 +196,10 @@ class TimePicker {
      * @return {void}
      */
     showEvent(event) {
+        const hasInput = event.target.value !== '';
+
         this.inputEl = event.target;
-        this.show();
+        this.show(hasInput);
     }
 
     /**
@@ -256,7 +258,7 @@ class TimePicker {
         const time = [this.cachedEls.displayTimeHours, this.cachedEls.displayTimeMinutes];
 
         // prepend with zero if selecting minutes and value is single digit
-        time[index] = index === 1 && value < 10 ? `0${value}` : value;
+        time[index] = index === 1 && value.length < 2 ? `0${value}` : value;
         this.cachedEls[`displayTime${index ? 'Minutes' : 'Hours'}`].innerHTML = time[index];
     }
 
