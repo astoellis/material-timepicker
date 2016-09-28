@@ -104,6 +104,16 @@ describe('TimePicker Unit Tests', function() {
 
             expect(showSpy.calledOnce).to.be.true;
         });
+
+        it('should call #show method with true if non-empty input', function() {
+            const inputEl = document.createElement('input');
+            const showSpy = sinon.spy(picker, 'show');
+
+            inputEl.value = '4:00 AM';
+            picker.openOnInput(inputEl);
+
+            expect(showSpy.calledWith(true)).to.be.true;
+        });
     });
 
     describe('#setupTemplate', function() {
@@ -294,7 +304,7 @@ describe('TimePicker Unit Tests', function() {
 
     describe('#show', function() {
         let blurSpy, isMilitaryFormatStub, toggleHoursVisibleSpy, toggleMinutesVisibleSpy,
-        setDisplayTimeSpy;
+        setDisplayTimeSpy, parseInputSpy, rotateHandSpy;
 
         beforeEach(function() {
             picker.inputEl = document.createElement('input');
@@ -303,6 +313,8 @@ describe('TimePicker Unit Tests', function() {
             toggleHoursVisibleSpy = sinon.spy(picker, 'toggleHoursVisible');
             toggleMinutesVisibleSpy = sinon.spy(picker, 'toggleMinutesVisible');
             setDisplayTimeSpy = sinon.spy(picker, 'setDisplayTime');
+            parseInputSpy = sinon.spy(picker, 'parseInput');
+            rotateHandSpy = sinon.spy(picker, 'rotateHand');
         });
 
         afterEach(function() {
@@ -311,6 +323,8 @@ describe('TimePicker Unit Tests', function() {
             toggleHoursVisibleSpy.restore();
             toggleMinutesVisibleSpy.restore();
             setDisplayTimeSpy.restore();
+            parseInputSpy.restore();
+            rotateHandSpy.restore();
         });
 
         it('should call blur on inputEl', function() {
@@ -357,6 +371,13 @@ describe('TimePicker Unit Tests', function() {
             expect(setDisplayTimeSpy.getCall(1).calledWith('0', 1)).to.be.true;
         });
 
+        it('should call #parseInput if hasInput is true', function() {
+            picker.inputEl.value = '1:00 AM';
+            picker.show(true);
+
+            expect(parseInputSpy.calledWith('1:00 AM')).to.be.true;
+        });
+
         it('should call #setDisplayTime, index 0, with 4 if hasInput is true', function() {
             picker.inputEl.value = '4:00 PM';
             picker.show(true);
@@ -369,6 +390,18 @@ describe('TimePicker Unit Tests', function() {
             picker.show(true);
 
             expect(setDisplayTimeSpy.getCall(1).calledWith('45', 1)).to.be.true;
+        });
+
+        it('should call #rotateHand with 0 when empty input', function() {
+            picker.show();
+
+            expect(rotateHandSpy.calledWith(0)).to.be.true;
+        });
+
+        it('should call #rotateHand with 2 when input is 2:00 am', function() {
+            picker.inputEl.value = '2:00 am';
+            picker.show(true);
+            expect(rotateHandSpy.calledWith(2)).to.be.true;
         });
 
         it('should set cachedEls.displayMeridiem.style.display to none when isMilitaryFormat is true', function() {
@@ -436,6 +469,17 @@ describe('TimePicker Unit Tests', function() {
             picker.showEvent(event);
 
             expect(showSpy.calledOnce).to.be.true;
+        });
+
+        it('should call #show with true if non-empty string', function () {
+          const showSpy = sinon.spy(picker, 'show');
+          const event = {};
+          event.target = document.createElement('input');
+          event.target.mtpOptions = picker.defaultOptions;
+          event.target.value = '1:30 AM';
+          picker.showEvent(event);
+
+          expect(showSpy.calledWith(true)).to.be.true;
         });
     });
 

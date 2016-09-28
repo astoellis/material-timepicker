@@ -95,7 +95,9 @@ class TimePicker {
     openOnInput(inputEl, options = {}) {
         this.inputEl = inputEl instanceof HTMLElement ? inputEl : document.querySelector(inputEl);
         this.inputEl.mtpOptions = assign({}, this.defaultOptions, options);
-        this.show();
+        const hasInput = this.inputEl.value !== '';
+
+        this.show(hasInput);
     }
 
     /**
@@ -180,11 +182,12 @@ class TimePicker {
 
             this.setDisplayTime(inputValues[0], 0);
             this.setDisplayTime(inputValues[1], 1);
-            this.rotateHand(this.getActiveIndex(hourEls));
         } else {
             this.setDisplayTime(isMilitaryFormat ? '00' : '12', 0);
             this.setDisplayTime('0', 1);
         }
+        // rotate hand to appropriate hour
+        // this.rotateHand(this.getActiveIndex(hourEls);
 
         this.cachedEls.body.style.overflow = 'hidden';
         this.cachedEls.displayMeridiem.style.display = isMilitaryFormat ? 'none' : 'inline';
