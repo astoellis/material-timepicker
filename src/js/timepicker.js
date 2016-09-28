@@ -167,6 +167,9 @@ class TimePicker {
     show(hasInput) {
         const isMilitaryFormat = this.isMilitaryFormat();
 
+        // show hours first in every case
+        const hourEls = isMilitaryFormat ? this.cachedEls.clockMilitaryHoursLi : this.cachedEls.clockHoursLi;
+
         // blur input to prevent onscreen keyboard from displaying
         this.inputEl.blur();
         this.toggleHoursVisible(true, isMilitaryFormat);
@@ -177,6 +180,7 @@ class TimePicker {
 
             this.setDisplayTime(inputValues[0], 0);
             this.setDisplayTime(inputValues[1], 1);
+            this.rotateHand(this.getActiveIndex(hourEls));
         } else {
             this.setDisplayTime(isMilitaryFormat ? '00' : '12', 0);
             this.setDisplayTime('0', 1);
